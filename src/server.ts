@@ -1,8 +1,16 @@
+import "dotenv/config";
 import express, { type Express, type Request, type Response } from 'express';
-import dotenv from 'dotenv';
-import connectDB from "./config/db";
+import connectDB from "./config/db.js";
+import authRoutes from "./routes/authRoutes.js";
 
-dotenv.config();
+const app: Express = express();
+const port = process.env.PORT || 3000;
+
+app.use(express.json()); // body middleware
+app.use("/api/auth", authRoutes)
+app.get('/health', (req: Request, res: Response) => {
+    res.json({ status: "ok" });
+});
 async function start() {
     await connectDB();
     app.listen(port, () => {
@@ -10,14 +18,5 @@ async function start() {
     });
 }
 
-
-
-
-const app: Express = express();
-const port = process.env.PORT || 3000;
-
-app.get('/health', (req: Request, res: Response) => {
-    res.json({ status: "ok" })
-});
 start();
 
